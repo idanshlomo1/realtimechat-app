@@ -15,7 +15,7 @@ export const SocketContextProvider = ({ children }) => {
     const { authUser } = useAuthContext()
     useEffect(() => {
         if (authUser) {
-            const socket = io("http://localhost:5000", {
+            const socket = io("https://realtimechat-app-yyb2.onrender.com/sign-in", {
                 query: {
                     userId: authUser._id
                 }
