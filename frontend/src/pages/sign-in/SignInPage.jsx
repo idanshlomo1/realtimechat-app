@@ -1,26 +1,26 @@
 import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { AlertCircle, MessageCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import useSignIn from '@/hooks/useSignIn'
 
 const SignInPage = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
+    const { loading, error, signIn } = useSignIn()
+    const navigate = useNavigate()
 
-    const handleSignIn = (e) => {
+    const handleSignIn = async (e) => {
         e.preventDefault()
-        if (!username || !password) {
-            setError('Please enter both username and password.')
-            return
+        const result = await signIn(username, password)
+        if (result) {
+            // Redirect to the main page or dashboard after successful sign-in
+            navigate('/') // Adjust this route as needed
         }
-        // Here you would typically handle the sign-in logic
-        console.log('Signing in with:', username, password)
-        // Reset error
-        setError('')
     }
 
     return (
@@ -61,20 +61,24 @@ const SignInPage = () => {
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
                     )}
-                    <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition duration-200 ease-in-out transform hover:scale-105">
-                        Sign In
+                    <Button
+                        type="submit"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition duration-200 ease-in-out transform hover:scale-105"
+                        disabled={loading}
+                    >
+                        {loading ? 'Signing In...' : 'Sign In'}
                     </Button>
                 </form>
-                <div className="mt-6 text-center">
-                    <a href="#" className="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot password?</a>
-                </div>
+                {/* <div className="mt-6 text-center">
+                    <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 font-medium">Forgot password?</Link>
+                </div> */}
             </CardContent>
             <CardFooter className="flex justify-center border-t border-gray-100 p-6">
                 <p className="text-sm text-gray-600">
                     Don't have an account?{" "}
-                    <a href="#" className="text-blue-600 font-semibold hover:text-blue-800">
+                    <Link to="/sign-up" className="text-blue-600 font-semibold hover:text-blue-800">
                         Create an account
-                    </a>
+                    </Link>
                 </p>
             </CardFooter>
         </Card>

@@ -1,15 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MessagesContainer from '@/components/MessagesContainer'
 import Sidebar from '@/components/Sidebar'
+import { useConversation } from '@/zustand/useConversation'
 
 const HomePage = () => {
-    const [selectedChat, setSelectedChat] = useState(null)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    const { selectedConversation, setSelectedConversation } = useConversation()
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
 
+    useEffect(() => {
+        return () => setSelectedConversation(null)
+
+    }, [setSelectedConversation]);
+
     return (
-        <div className="flex h-screen w-screen  p-0 sm:p-4">
+        <div className="flex h-screen w-screen p-0 sm:p-4">
             <div className="flex w-full h-full bg-white sm:rounded-2xl overflow-hidden shadow-2xl">
                 {/* Sidebar */}
                 <div className={`
@@ -22,7 +28,7 @@ const HomePage = () => {
                     z-20 sm:z-auto
                 `}>
                     <Sidebar onSelectChat={(chat) => {
-                        setSelectedChat(chat)
+                        setSelectedConversation(chat)
                         setIsSidebarOpen(false)
                     }} />
                 </div>
@@ -30,7 +36,7 @@ const HomePage = () => {
                 {/* Messages Container */}
                 <div className="flex-grow h-full w-full sm:w-[calc(100%-350px)] lg:w-[calc(100%-400px)]">
                     <MessagesContainer
-                        selectedChat={selectedChat}
+                        selectedChat={selectedConversation}
                         onBackClick={toggleSidebar}
                         showBackButton={true}
                     />

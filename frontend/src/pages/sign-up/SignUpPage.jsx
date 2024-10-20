@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -6,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { AlertCircle, UserPlus } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import useSignUp from '@/hooks/useSignUp'
 
 const SignUpPage = () => {
     const [firstName, setFirstName] = useState('')
@@ -14,22 +16,12 @@ const SignUpPage = () => {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [gender, setGender] = useState('')
-    const [error, setError] = useState('')
 
-    const handleSignUp = (e) => {
+    const { loading, error, signUp } = useSignUp()
+
+    const handleSignUp = async (e) => {
         e.preventDefault()
-        if (!firstName || !lastName || !username || !password || !confirmPassword || !gender) {
-            setError('Please fill in all fields.')
-            return
-        }
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.')
-            return
-        }
-        // Here you would typically handle the sign-up logic
-        console.log('Signing up with:', { firstName, lastName, username, password, gender })
-        // Reset error
-        setError('')
+        await signUp(firstName, lastName, username, password, confirmPassword, gender)
     }
 
     return (
@@ -116,17 +108,17 @@ const SignUpPage = () => {
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
                     )}
-                    <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition duration-200 ease-in-out transform hover:scale-105">
-                        Sign Up
+                    <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition duration-200 ease-in-out transform hover:scale-105" disabled={loading}>
+                        {loading ? 'Signing Up...' : 'Sign Up'}
                     </Button>
                 </form>
             </CardContent>
             <CardFooter className="flex justify-center border-t border-gray-100 p-6">
                 <p className="text-sm text-gray-600">
                     Already have an account?{" "}
-                    <a href="#" className="text-blue-600 font-semibold hover:text-blue-800">
+                    <Link to="/sign-in" className="text-blue-600 font-semibold hover:text-blue-800">
                         Sign in
-                    </a>
+                    </Link>
                 </p>
             </CardFooter>
         </Card>
