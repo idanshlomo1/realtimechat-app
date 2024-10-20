@@ -63,20 +63,17 @@ export const getMessages = async (req, res) => {
         const senderId = req.user._id;
 
         // Log sender and receiver IDs for debugging
-        console.log(`Fetching messages between sender: ${senderId} and receiver: ${userToChatId}`);
 
         const conversation = await Conversation.findOne({
             participants: { $all: [senderId, userToChatId] }
         }).populate("messages"); // Populate the messages with the actual documents
 
         if (!conversation) {
-            console.log(`No conversation found between sender ${senderId} and receiver ${userToChatId}`);
             return res.status(200).json([]); // No conversation found, return empty array
         }
 
         // Extract messages from the conversation
         const messages = conversation.messages;
-        console.log(`Found ${messages.length} messages between sender ${senderId} and receiver ${userToChatId}`);
 
         res.status(200).json(messages);
 

@@ -15,27 +15,36 @@ export const SocketContextProvider = ({ children }) => {
     const { authUser } = useAuthContext()
     useEffect(() => {
         if (authUser) {
-            const socket = io("https://realtimechat-app-yyb2.onrender.com/sign-in", {
+            const socket = io("https://realtimechat-app-yyb2.onrender.com", {
                 query: {
                     userId: authUser._id
                 }
-            })
-            setSocket(socket)
+            });
+            setSocket(socket);
+
+            socket.on("connect", () => {
+                console.log("Connected to server with socket ID:", socket.id);
+            });
+
+            socket.on("disconnect", (reason) => {
+                console.log("Disconnected from server. Reason:", reason);
+            });
 
             socket.on("getOnlineUsers", (users) => {
-                setOnlineUsers(users)
-            })
+                setOnlineUsers(users);
+                console.log("Online users:", users);
+            });
 
-            return () => socket.close()
-
+            return () => socket.close();
         } else {
             if (socket) {
-                socket.close()
-                setSocket(null)
+                console.log("Closing socket connection...");
+                socket.close();
+                setSocket(null);
             }
         }
-
     }, [authUser]);
+
 
     return <SocketContext.Provider value={{ socket, onlineUsers }}>
         {children}
