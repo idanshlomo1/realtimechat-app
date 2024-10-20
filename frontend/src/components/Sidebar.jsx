@@ -9,6 +9,7 @@ import Conversation from './Conversation';
 import { useLogout } from '@/hooks/useLogout';
 import useGetConversations from '@/hooks/useGetConversations';
 import { useConversation } from '@/zustand/useConversation';
+import { useSocketContext } from '@/context/SocketContext';
 
 const LoadingSkeleton = () => (
     <div className="space-y-3">
@@ -29,6 +30,7 @@ const Sidebar = ({ onSelectChat }) => {
     const { loading: loadingLogout, logout } = useLogout();
     const { conversations, loading: loadingConversations, error } = useGetConversations();
     const { selectedConversation, setSelectedConversation } = useConversation();
+
 
     const filteredConversations = conversations?.filter(conv =>
         `${conv.firstName} ${conv.lastName} ${conv.username}`.toLowerCase().includes(searchQuery.toLowerCase())
@@ -76,6 +78,7 @@ const Sidebar = ({ onSelectChat }) => {
                             {filteredConversations.map((conv) => (
                                 <div key={conv._id} onClick={() => handleConversationSelect(conv)}>
                                     <Conversation
+                                        _id={conv._id}
                                         firstName={conv.firstName}
                                         lastName={conv.lastName}
                                         username={conv.username}

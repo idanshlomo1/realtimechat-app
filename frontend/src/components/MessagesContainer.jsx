@@ -10,10 +10,12 @@ import useSendMessage from '@/hooks/useSendMessage';
 import useGetMessages from '@/hooks/useGetMessages';
 import { useAuthContext } from "@/context/AuthContext";
 import { useConversation } from "@/zustand/useConversation";
+import useListenMessages from '@/hooks/useListenMessages';
 
 const MessagesContainer = ({ onBackClick }) => {
     const [messageInput, setMessageInput] = useState('');
     const { loading: sendMessageLoading, sendMessage } = useSendMessage();
+    useListenMessages()
     const { messages, loading: messagesLoading } = useGetMessages();
     const { authUser } = useAuthContext();
     const { selectedConversation } = useConversation();
